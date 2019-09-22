@@ -9,7 +9,7 @@ We have learned github basics, r basics and started to an assignment on R - Mark
 
 # Week1
 
-(Assigment1)[]
+(Assigment1)[https://github.com/pjournal/mef03-MustafaOmerGuclu/blob/master/Assignment1.html]
 
 
 
