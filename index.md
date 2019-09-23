@@ -9,7 +9,7 @@ We have learned github basics, r basics and started to an assignment on R - Mark
 
 # Week1
 
-[Assigmnet1](Assignment1.html)
+[Assignment1](Assignment1.html)
 
 
 
