@@ -1,0 +1,79 @@
+---
+title: "Assigment1"
+author: "MustafaÖmerGüçlü"
+date: "22 Eylül 2019"
+output: html_document
+---
+
+## About Myself
+
+I have over four years experience in production systems and supply chain management. I enjoyed my job which improves my abilities in planning, optimization and innovativethinking. Also, leading a team in an international company challenged me to developgood communicational skills. Besides these, I noticed, it is my analytical way of thinking and data-driven approaches that thrill me most and play important role in achievingsuccess in my projects. Thus, I am very eager to continue my career in data science and I believe that my dedicated and quick-learner self will help me on this journey.
+
+[linkedin](https://tr.linkedin.com/in/mustafa-ömer-güçlü)
+
+[github page](https://pjournal.github.io/mef03-MustafaOmerGuclu/)
+
+
+
+
+#HW1
+
+I preperad 1 example and 3 topic as a Candidate of Data Scientist.
+
+## About My Interest
+
+Coupling R with geospatial databases to reduce the calculations and data in R and improve shiny app speedLike any web page,
+I saw an application Google Map data and Shiny together.I really interested with spatial data visualization due to my last work experimets.This user experiment includes creating a circle o the map and Mongo database query for polygons which which are intersect with given circle.
+For any kind of data or applications for supply chain need such visualizations on map within such practical, short time consumer features.
+In this video; Using MongoDB as a geospatial database- Querying & returning geospatial data to R from MongoDB- Comparison and benchmarking of geospatial operations in R vs on the database server- Applying this to a shiny app with a demonstration, highlighting the pros & cons
+
+[Link](https://youtu.be/xXqdclBlJTk) 
+
+## Example 1 - Neural Networks in R
+
+In this vdeo you can see a basic example of neural network in R coding.Dr. Bharatendra Rai is giving basic example for admit prediction model for students' data set include gpa,gre etc.Line by line you can see basics of neural network and understand its basis.At the end of the video there exist a advantages and disadvantages list of Neural Network.It is robust with noisy data but it is less interpretable than other models such as decision tree and usually needs longer training times.
+
+[Link](https://youtu.be/-Vs9Vae2KI0) 
+
+## Example 2 - Decision Tree with R
+
+In this vdeo you can see a basic example of decision or clasiification tree in R coding.Dr. Bharatendra Rai is giving basic example for decision of 22 variables to predict 2126 observation to decide patient is normal or suspect or pathalogical and using first 3 variables created a decision tree for those 3 categorical values and use that model for predicting patients' category and compaired them with real results. We can use such model and create our decision model and we can choose our variables for best prediction performance this video is good for being a basic introduction to understand how decision tree works within R.
+
+[Link](https://youtu.be/tU3Adlru1Ng) 
+
+## Example 3 - Forecasting Time Series Data in R 
+
+I like this video because it shows an example of forecasting with wikipedia data.Forecasting is an important tool related to analyzing big data or working in data science field.Video also imcludes Facebook's Prophet Package 2017 & Tom Brady or anyones Wikipedia data usage.
+
+This video includes
+"An example of using Facebook's open source package prophet including,
+- data scraped from Tom Brady's Wikipedia page 
+- getting Wikipedia trend data 
+- time series plot
+- handling missing data and log transform
+- forecasting with Facebook's prophet
+- prediction
+- plot of actual versus forecast data
+- breaking and plotting forecast into trend, weekly seasonality & yearly seasonality components"
+
+[Link](https://youtu.be/7xDAYa6Ouo8)
+
+**Note from one usefull comment at the link above** 
+
+"Since "wikipediatrent" is not working anymore, you could use "pageviews"
+install.packages("pageviews")
+library(pageviews)
+data <- article_pageviews(project = "de.wikipedia", article = "Tom_Brady", platform ="all",user_type = "all", start = "2015010700", end="2018030100", reformat = TRUE)"
+
+
+
+
+
+
+
+
+
+
+
+
+
