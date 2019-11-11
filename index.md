@@ -11,6 +11,16 @@ We have learned github basics, r basics and started to an assignment on R - Mark
 
 [Assignment1](Assignment1.html)
 
+# Week2
+
+# Week3
+
+# Week4
+
+[BKM Assignment]()
+
+
+
 
 
 
