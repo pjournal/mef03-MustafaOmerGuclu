@@ -1,0 +1,115 @@
+---
+title: "BKM Assignment"
+author: "Mustafa Omer Guclu"
+date: "8 Nov 2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+#REQUIRED LIBRARIES
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2 )
+library(rvest)
+library(stringr)
+```
+```{r}
+##IMPORT AND ORGANIZE DATA
+
+#TO GET LIST OF URL OF BKM  
+
+
+x <- list()
+for (i in 0:9){
+  for (k in 1:12) {
+x[[paste0("url201",i,"0",k)]]<-paste0("https://bkm.com.tr/secilen-aya-ait-sektorel-gelisim/?filter_year=201",i,"&filter_month=",k,"&List=Listele")
+  }
+}
+
+
+```
+  Please examine code above with the URL of the BKM Web Page linked below
+
+[BKM Link](https://bkm.com.tr/secilen-aya-ait-sektorel-gelisim/?filter_year=2019&filter_month=6&List=Listele)
+
+
+
+```{r}
+#GETTING DATA FROM URL LIST AND BINDING TO ALL INVOLVED ONE DATAFRAME
+DF<-data.frame(matrix(ncol = 5, nrow = 0))
+
+for (i in x){
+ HTML_1<-read_html(i) 
+ temp_DF<-html_table(html_nodes(HTML_1, "table"),fill = TRUE)[[4]]
+ 
+ for (n in 1:nrow(temp_DF)){
+   temp_DF$date[[n]]<-str_remove_all(gsub(".*year=(.+)&filter_month=", "\\1", i),"[A-Z]|[a-z]|&|=")
+ }
+ DF<-bind_rows(DF,temp_DF)
+}
+
+
+
+
+```
+```{r}
+#DATA WRANGLING & CONTROL OF FINAL FORM OF DATA
+
+DF$year = substr(DF$date, 1,4)
+DF$month = substr(DF$date,start=5,stop=6)
+colnames(DF)<-c("Sector","Numb_CC","Numb_DC","Amount_CC","Amount_DC","date","year","month")
+DF<-DF%>%filter(Sector!="Ýþyeri Grubu")%>%filter(Sector!="TOPLAM")%>%filter(Sector!="Lütfen listeyi görebilmek için yukarýdan tarih seçiniz.")
+str(DF)
+DF$Numb_CC<-gsub("[.]", "",DF$Numb_CC)
+DF$Numb_DC<-gsub("[.]", "",DF$Numb_DC)
+DF$Amount_CC<-gsub("[.]", "",DF$Amount_CC)
+DF$Amount_DC<-gsub("[.]", "",DF$Amount_DC)
+DF$Amount_CC<-gsub("[,]", ".",DF$Amount_CC)
+DF$Amount_DC<-gsub("[,]", ".",DF$Amount_DC)
+
+DF$Numb_CC<- as.numeric(as.character(DF$Numb_CC))
+DF$Numb_DC<- as.numeric(as.character(DF$Numb_DC))
+DF$Amount_CC<- as.numeric(as.character(DF$Amount_CC))
+DF$Amount_DC<- as.numeric(as.character(DF$Amount_DC))
+
+str(DF)
+```
+
+```{r}
+##ANALYSIS AND GRAPHS
+# Analysis 1 - Yearly Development of Debit and Credit Card Usage
+
+pl_df_sum<-DF%>%group_by(year)%>% summarise(Num=sum(Numb_CC+Numb_DC),Amount=sum(Amount_CC+Amount_DC))
+pl_df_sum$Num<-round(pl_df_sum$Num/1000000)
+
+
+
+ggplot(pl_df_sum) + geom_point(aes(x=year,y=Num,size=Amount,color=year)) +labs(title = "Cards Usage", subtitle = "Debit and Credit Card Usage", caption="(based on data from BKM)", y="Tot. Credit and Debit Card Usage (in Mio)", x="Year") +scale_y_continuous()
+
+
+
+```
+As you can see in the graph "Card Usage / Debit and Credit Card Usage" Total usage of debit and credit card is increasing in both way (amount in Mio TL can be seen in size) and (number in Mio in y position) from 2010 to 2019.
+
+
+```{r}
+
+
+## Analysis 2 - Yearly Development of Top5 Sector of Debit and Credit Card Usage
+
+filter1<-DF%>% group_by(Sector) %>% summarise(Total_Numb_CC=sum(Numb_CC),Total_Numb_DC=sum(Numb_DC),Total_Amount_CC=sum(Amount_CC),Total_Amount_DC=sum(Amount_DC))%>% arrange(desc(Total_Numb_CC+Total_Numb_DC)) %>% slice(1:5) 
+
+yearly_develpment_fortop5<-DF %>% filter(DF$Sector==filter1$Sector)
+yearly_develpment_fortop5$Numb_CC<-round(yearly_develpment_fortop5$Numb_CC/1000000)
+yearly_develpment_fortop5$Numb_DC<-round(yearly_develpment_fortop5$Numb_DC/1000000)
+
+ggplot(yearly_develpment_fortop5) + geom_jitter(aes(x=year,y=Numb_CC+Numb_DC,color=Sector,size=Amount_CC+Amount_DC)) +labs(title = "Cards Usage", subtitle = "Top 5 Sector (Debit and Credit Card Usage)", caption="(based on data from BKM)", y="Tot. Credit+Debit Card Use (in Mio)", x="Year") +scale_y_continuous()
+
+
+```
+
+
+As you can see in the graph "Card Usage / Top 5 Sector (Debit and Credit Card Usage)" Total usage of debit and credit card is increasing in both way (amount in Mio TL can be seen in size) and (number in Mio in y position) from 2010 to 2019 for Top5 sector. But we look closely to the details: Market/ Retail Shopping is the dominant leader from in those years. Despite the total food shopping transactions sum (Debit + Credit) is second in the list but only in terms of number of transaction not the amount in TL as you can see from graph above.
