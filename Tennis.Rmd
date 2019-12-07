@@ -1,0 +1,77 @@
+---
+title: "Week6"
+output: html_document
+---
+REQUIRED PACKAGE
+```{r}
+library(tidyverse) ## dplyr provides the join functions
+
+```
+
+
+
+
+[Data Avaliable Here](https://github.com/pjournal/mef03-MustafaOmerGuclu/blob/master/atp_tennis_data_2017.RData)
+
+After Download Data from Link Above 
+
+
+Load the data to your Working Directory with code below
+
+```{r}
+load("/home/mustafa-omer/İndirilenler/atp_tennis_data_2017.RData") # Change Path according to your data location you may use file.chose() function to reach your data path 
+```
+DATA EXAMINATION
+```{r}
+str(player_df)
+```
+
+```{r}
+str(rank_df)
+```
+```{r}
+str(score_df)
+```
+
+```{r}
+str(stats_df)
+```
+
+```{r}
+str(tourney_df)
+```
+QUESTION-1:
+Rank countries (flag cıdes) by the number of singles champions
+
+Solution-1:
+```{r}
+champ_flags_df<-tourney_df%>%left_join(.,player_df,by=c("singles_winner_player_id"="player_id"))%>%count(flag_code,sort = TRUE)
+champ_flags_df
+```
+
+QUESTION-2:
+Rank countries which did not get any singles championships by the games won when they win the match
+
+Solution-2:
+```{r}
+nonchamp_players<-player_df%>%select(player_id,flag_code)%>%anti_join(.,champ_flags_df)
+loser_countries_rank<-nonchamp_players%>%left_join(.,score_df,by=c("player_id"="winner_player_id"))%>%group_by(flag_code)%>%summarise(total_won=sum(winner_games_won,na.rm = TRUE))%>%arrange(desc(total_won))
+loser_countries_rank
+```
+
+ANALYSIS-1:
+Youngest Winner her/his birth date and name of tournament that s/he won 
+```{r}
+winner_tourney_match_df<-left_join(tourney_df,player_df,by=c("singles_winner_player_id"="player_id"))
+sorted_by_desc_birth_date_winner_df<-winner_tourney_match_df%>%select(first_name,last_name,birth_date,tourney_name)%>%arrange(desc(birth_date))
+youngest_winner_birth_date_tourney<-sorted_by_desc_birth_date_winner_df[1,]
+youngest_winner_birth_date_tourney
+```
+ANALYSIS-2:
+Best Player of 2017 and Number of succeeded tournaments by her/him
+```{r}
+success_df<-score_df%>%select(tourney_id,tourney_round_name,winner_player_id)%>%filter(tourney_round_name=="Finals")%>%count(winner_player_id,sort = TRUE)
+best_player_2007<-player_df%>%left_join(.,success_df,by=c("player_id"="winner_player_id"))%>%select(first_name,last_name,n)%>%arrange(desc(n))%>%slice(1)
+best_player_2007
+```
+
