@@ -26,7 +26,7 @@ We have learned github basics, r basics and started to an assignment on R - Mark
 
 # Final
 
-[Data Collection & Binding Code](Mustafa-Ömer-Güçlü.html)
+[Data Collection & Binding Code](BDA-503---Final---Fall--Data-Collection-and-Binding-2019---Mustafa-Ömer-Güçlü.html)
 
 
 
