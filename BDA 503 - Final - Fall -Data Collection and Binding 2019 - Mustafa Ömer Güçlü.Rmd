@@ -1,0 +1,177 @@
+---
+title: ' BDA 503 Fall 2019 - Final -Collecting Data Set and Binding '
+author: "Mustafa ÖMer Güçlü"
+date: "21 12 2019"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+REQUIRED PACKAGES
+```{r , echo=TRUE}
+library(readxl)
+library(tidyverse)
+```
+REQUIRED DATA BIND FUNCTION FOR DATAFRAME BINDING 
+```{r , echo=TRUE}
+force_bind = function(df1, df2){colnames(df2) = colnames(df1)
+bind_rows(df1, df2)}
+```
+Raw Data are gathered from provided link of Ministery of Agriculture and Forestry:
+[Link](https://www.tarimorman.gov.tr/Konular/Bitkisel-Uretim/Organik-Tarim/Istatistikler)
+
+Please be aware of that while examining to codes!
+For each year agriculture data of the year consist of 2 excel file, therefore we need to rename and collect them as 2012_1, 2012_2... etc. in the working directory.
+
+Have a nice journey
+
+
+2012 Dataset
+
+```{r , echo=TRUE}
+
+Agriculture_2012_1<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2012_1.xls",skip=2)
+Agriculture_2012_1<-fill(Agriculture_2012_1,İller)
+Agriculture_2012_2<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2012_2.xls",skip=1)
+Agriculture_2012_2<-fill(Agriculture_2012_2,İller)
+Agriculture_2012_1$Yıl<-2012
+Agriculture_2012_2$Yıl<-2012
+Agriculture_2012<-force_bind(Agriculture_2012_1, Agriculture_2012_2)
+Agriculture_2012_Other<-Agriculture_2012%>%filter(`Çiftçi sayısı`!="")
+Agregate_Agriculture_2012<-Agriculture_2012%>%filter(İller=="Genel Toplam") %>%group_by(Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı(ton)`,na.rm = TRUE),"Real_product_area"=sum(`Gerçek üretim alanı(ha)`),"Natural_collection_area"=sum(`Doğal toplama  alanı(ha)`),"Fallow_area"=sum(`Nadas Alanı(ha)`),"Total_area"=sum(`Toplam  alan(ha)`),"Farmer_number"=sum(`Çiftçi sayısı`))
+Agregate_Agriculture_2012<-Agregate_Agriculture_2012%>%rename("Year"=Yıl)
+Product_Base_2012<-Agriculture_2012%>%filter(`Ürün adı`!="") %>%group_by(`Ürün adı`,Yıl)%>%summarise("Total_Production_ton"=sum(`Üretim miktarı(ton)`,na.rm = TRUE))%>%arrange(desc(`Total_Production_ton`))
+City_Base_2012<-Agriculture_2012%>%filter(`Ürün adı`!="") %>%group_by(İller,,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı(ton)`,na.rm = TRUE))
+City_Base_2012<-City_Base_2012%>% arrange(desc(`Total_Production_ton`))
+```
+2013 Dataset
+```{r , echo=TRUE}
+Agriculture_2013_1<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2013_1.xlsx",skip=2)
+Agriculture_2013_1<-fill(Agriculture_2013_1,İller)
+Agriculture_2013_2<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2013_2.xlsx",skip=2)
+Agriculture_2013_2<-fill(Agriculture_2013_2,İller)
+Agriculture_2013_1$Yıl<-2013
+Agriculture_2013_2$Yıl<-2013
+Agriculture_2013<-force_bind(Agriculture_2013_1, Agriculture_2013_2)
+Agriculture_2013_Other<-Agriculture_2013%>%filter(`Çiftçi sayısı`!="")
+Agriculture_Other_DF<-force_bind(Agriculture_2012_Other,Agriculture_2013_Other)
+Agriculture_All<-force_bind(Agriculture_2012,Agriculture_2013)
+Agregate_Agriculture_2013<-Agriculture_2013%>%filter(İller=="Genel Toplam") %>%group_by(Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton)`,na.rm = TRUE),"Real_product_area"=sum(`Gerçek üretim alanı(ha)`),"Natural_collection_area"=sum(`Doğal toplama  alanı(ha)`),"Fallow_area"=sum(`Nadas Alanı(ha)`),"Total_area"=sum(`Toplam  alan(ha)`),"Farmer_number"=sum(`Çiftçi sayısı`))
+Agregate_Agriculture_2013<-Agregate_Agriculture_2013%>%rename("Year"=Yıl)
+Product_Base_2013<-Agriculture_2013%>%filter(`Ürün adı`!="") %>%group_by(`Ürün adı`,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton)`,na.rm = TRUE))%>%arrange(desc(`Total_Production_ton`))
+City_Base_2013<-Agriculture_2013%>%filter(`Ürün adı`!="") %>%group_by(İller,,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton)`,na.rm = TRUE))
+City_Base_2013<-City_Base_2013%>% arrange(desc(`Total_Production_ton`))
+```
+2014 Dataset
+```{r , echo=TRUE}
+Agriculture_2014_1<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2014_1.xlsx",skip=2)
+Agriculture_2014_1<-fill(Agriculture_2014_1,İller)
+Agriculture_2014_2<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2014_2.xlsx",skip=2)
+Agriculture_2014_2<-fill(Agriculture_2014_2,İller)
+Agriculture_2014_1$Yıl<-2014
+Agriculture_2014_2$Yıl<-2014
+Agriculture_2014<-force_bind(Agriculture_2014_1, Agriculture_2014_2)
+Agriculture_2014_Other<-Agriculture_2014%>%filter(`Gerçek çiftçi sayısı`!="")
+Agriculture_Other_DF<-force_bind(Agriculture_Other_DF,Agriculture_2014_Other)
+Agriculture_All<-force_bind(Agriculture_All,Agriculture_2014)
+Agregate_Agriculture_2014<-Agriculture_2014%>%filter(İller=="Genel Toplam") %>%group_by(Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE),"Real_product_area"=sum(`Gerçek üretim alanı(ha)`),"Natural_collection_area"=sum(`Doğal toplama  alanı(ha)`),"Fallow_area"=sum(`Nadas Alanı(ha)`),"Total_area"=sum(`Toplam  alan(ha)`),"Farmer_number"=sum(`Gerçek çiftçi sayısı`))
+Agregate_Agriculture_2014<-Agregate_Agriculture_2014%>%rename("Year"=Yıl)
+Product_Base_2014<-Agriculture_2014%>%filter(`Ürün adı`!="") %>%group_by(`Ürün adı`,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))%>%arrange(desc(`Total_Production_ton`))
+City_Base_2014<-Agriculture_2014%>%filter(`Ürün adı`!="") %>%group_by(İller,,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))
+City_Base_2014<-City_Base_2014%>% arrange(desc(`Total_Production_ton`))
+```
+2015 Dataset
+```{r , echo=TRUE}
+Agriculture_2015_1<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2015_1.xlsx",skip=2)
+Agriculture_2015_1<-fill(Agriculture_2015_1,İller)
+Agriculture_2015_2<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2015_2.xlsx",skip=1)
+Agriculture_2015_2<-fill(Agriculture_2015_2,İller)
+Agriculture_2015_1$Yıl<-2015
+Agriculture_2015_2$Yıl<-2015
+Agriculture_2015<-force_bind(Agriculture_2015_1, Agriculture_2015_2)
+Agriculture_All<-force_bind(Agriculture_All,Agriculture_2015)
+Agriculture_2015_Other<-Agriculture_2015%>%filter(`Gerçek çiftçi sayısı`!="")
+Agriculture_Other_DF<-force_bind(Agriculture_Other_DF,Agriculture_2015_Other)
+Agregate_Agriculture_2015<-Agriculture_2015%>%filter(İller=="Genel Toplam") %>%group_by(Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE),"Real_product_area"=sum(`Gerçek üretim alanı(ha)`),"Natural_collection_area"=sum(`Doğal toplama  alanı(ha)`),"Fallow_area"=sum(`Nadas Alanı(ha)`),"Total_area"=sum(`Toplam  alan(ha)`),"Farmer_number"=sum(`Gerçek çiftçi sayısı`))
+Agregate_Agriculture_2015<-Agregate_Agriculture_2015%>%rename("Year"=Yıl)
+Product_Base_2015<-Agriculture_2015%>%filter(`Ürün adı`!="") %>%group_by(`Ürün adı`,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))%>%arrange(desc(`Total_Production_ton`))
+City_Base_2015<-Agriculture_2015%>%filter(`Ürün adı`!="") %>%group_by(İller,,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))
+City_Base_2015<-City_Base_2015%>% arrange(desc(`Total_Production_ton`))
+```
+2016 Dataset
+```{r , echo=TRUE}
+Agriculture_2016_1<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2016_1.xlsx",skip=2)
+Agriculture_2016_1<-fill(Agriculture_2016_1,İller)
+Agriculture_2016_2<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2016_2.xlsx",skip=1)
+Agriculture_2016_2<-fill(Agriculture_2016_2,İller)
+Agriculture_2016_1$Yıl<-2016
+Agriculture_2016_1<-Agriculture_2016_1[-3059:-3060,] # 2016_1 Genel Toplam Row --> Total Prodution cell need to remove(') sign I did it manually-->Need Only for this year !!!
+Agriculture_2016_2$Yıl<-2016
+Agriculture_2016<-force_bind(Agriculture_2016_1, Agriculture_2016_2)
+Agriculture_All<-force_bind(Agriculture_All,Agriculture_2016)
+Agriculture_2016_Other<-Agriculture_2016%>%filter(`Gerçek çiftçi sayısı`!="")
+Agriculture_Other_DF<-force_bind(Agriculture_Other_DF,Agriculture_2016_Other)
+Agregate_Agriculture_2016<-Agriculture_2016%>%filter(İller=="Genel Toplam") %>%group_by(Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`),"Real_product_area"=sum(`Gerçek üretim alanı(ha)`),"Natural_collection_area"=sum(`Doğal Toplama Alanı (ha)`),"Fallow_area"=sum(`Nadas Alanı(ha)`),"Total_area"=sum(`Toplam  alan(ha)`),"Farmer_number"=sum(`Gerçek çiftçi sayısı`))
+Agregate_Agriculture_2016<-Agregate_Agriculture_2016%>%rename("Year"=Yıl)
+Product_Base_2016<-Agriculture_2016%>%filter(`Ürün adı`!="") %>%group_by(`Ürün adı`,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))%>%arrange(desc(`Total_Production_ton`))
+City_Base_2016<-Agriculture_2016%>%filter(`Ürün adı`!="") %>%group_by(İller,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))
+City_Base_2016<-City_Base_2016%>% arrange(desc(`Total_Production_ton`))
+```
+2017 Dataset
+```{r , echo=TRUE}
+Agriculture_2017_1<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2017_1.xlsx",skip=2)
+Agriculture_2017_1<-fill(Agriculture_2017_1,İller)
+Agriculture_2017_2<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2017_2.xlsx",skip=1)
+Agriculture_2017_2<-fill(Agriculture_2017_2,İller)
+Agriculture_2017_1$Yıl<-2017
+Agriculture_2017_2$Yıl<-2017
+Agriculture_2017<-force_bind(Agriculture_2017_1, Agriculture_2017_2)
+Agriculture_All<-force_bind(Agriculture_All,Agriculture_2017)
+Agriculture_2017_Other<-Agriculture_2017%>%filter(`Gerçek çiftçi sayısı`!="")
+Agriculture_Other_DF<-force_bind(Agriculture_Other_DF,Agriculture_2017_Other)
+Agregate_Agriculture_2017<-Agriculture_2017%>%filter(İller=="Genel Toplam") %>%group_by(Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`),"Real_product_area"=sum(`Gerçek üretim alanı(ha)`),"Natural_collection_area"=sum(`Doğal Toplama Alanı (ha)`,na.rm = TRUE),"Fallow_area"=sum(`Nadas Alanı(ha)`),"Total_area"=sum(`Toplam  alan(ha)`),"Farmer_number"=sum(`Gerçek çiftçi sayısı`))
+Agregate_Agriculture_2017<-Agregate_Agriculture_2017%>%rename("Year"=Yıl)
+Product_Base_2017<-Agriculture_2017%>%filter(`Ürün adı`!="") %>%group_by(`Ürün adı`,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))%>%arrange(desc(`Total_Production_ton`))
+City_Base_2017<-Agriculture_2017%>%filter(`Ürün adı`!="") %>%group_by(İller,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))
+City_Base_2017<-City_Base_2017%>% arrange(desc(`Total_Production_ton`))
+```
+2018 Dataset
+```{r , echo=TRUE}
+Agriculture_2018_1<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2018_1.xlsx",skip=2)
+Agriculture_2018_1<-fill(Agriculture_2018_1,İller)
+Agriculture_2018_2<-read_excel("/home/mustafa-omer/Belgeler/R-PROJECTS/R_Final _Dataset/2018_2.xlsx",skip=2)
+Agriculture_2018_2<-fill(Agriculture_2018_2,İller)
+Agriculture_2018_1$Yıl<-2018
+Agriculture_2018_2$Yıl<-2018
+Agriculture_2018<-force_bind(Agriculture_2018_1, Agriculture_2018_2)
+Agriculture_All<-force_bind(Agriculture_All,Agriculture_2018)
+Agriculture_2018_Other<-Agriculture_2018%>%filter(`Organik Çiftçi Sayısı`!="")
+Agriculture_Other_DF<-force_bind(Agriculture_Other_DF,Agriculture_2018_Other)
+Agregate_Agriculture_2018<-Agriculture_2018%>%filter(İller=="Genel Toplam") %>%group_by(Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`),"Real_product_area"=sum(`Organik Üretim Alanı HA`),"Natural_collection_area"=sum(`Organik Doğadan Toplama Üretim Alanı HA`,na.rm = TRUE),"Fallow_area"=sum(`Organik Nadas Alanı HA`),"Total_area"=sum(`Organik Toplam Alan HA`),"Farmer_number"=sum(`Organik Çiftçi Sayısı`))
+Agregate_Agriculture_2018<-Agregate_Agriculture_2018%>%rename("Year"=Yıl)
+Product_Base_2018<-Agriculture_2018%>%filter(`Ürün adı`!="") %>%group_by(`Ürün adı`,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))%>%arrange(desc(`Total_Production_ton`))
+City_Base_2018<-Agriculture_2018%>%filter(`Ürün adı`!="") %>%group_by(İller,Yıl)%>%summarise('Total_Production_ton'=sum(`Üretim miktarı (ton) Toplamı`,na.rm = TRUE))
+City_Base_2018<-City_Base_2018%>% arrange(desc(`Total_Production_ton`))
+```
+BINDING ALL YEAR DATASETS TOGETHER
+```{r setup, echo=TRUE}
+Product_Base_DF<-bind_rows(Product_Base_2012,Product_Base_2013,Product_Base_2014,Product_Base_2015,Product_Base_2016,Product_Base_2017,Product_Base_2018)
+City_Base_DF<-bind_rows(City_Base_2012,City_Base_2013,City_Base_2014,City_Base_2015,City_Base_2016,City_Base_2017,City_Base_2018)
+Agregate_Agriculture_Other_DF<-bind_rows(Agregate_Agriculture_2012,Agregate_Agriculture_2013,Agregate_Agriculture_2014,Agregate_Agriculture_2015,Agregate_Agriculture_2016,Agregate_Agriculture_2017,Agregate_Agriculture_2018)
+Agriculture_DF<-bind_rows(Agriculture_2012,Agriculture_2013,Agriculture_2014,Agriculture_2015,Agriculture_2016,Agriculture_2017,Agriculture_2018)
+Agriculture_All<-Agriculture_All%>%filter(`Ürün adı`!="")
+```
+CREATING RDATA
+```{r}
+save(Product_Base_DF, City_Base_DF,Agregate_Agriculture_Other_DF,Agriculture_All,Agriculture_Other_DF, file = "Agricultural.RData")
+```
+HAVE A LITTLE LOOK
+```{r}
+Product_Base_DF$`Ürün adı`<-tolower(Product_Base_DF$`Ürün adı`)
+glimpse(Product_Base_DF)
+```
+You can find all dataset binded together in this page,  at link:
+[Dataset 1 2012-2018 Agriculture Dataset](https://github.com/pjournal/mef03-MustafaOmerGuclu/blob/master/Agricultural.RData)
+
+You can find ımport/export dataset which is created by same approach at link:
+[Dataset 2 2012-2018 Agriculture -Import/Export  Dataset](https://github.com/pjournal/mef03-MustafaOmerGuclu/blob/master/Agricultural_imp_exp_total.RData)
